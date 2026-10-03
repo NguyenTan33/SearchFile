@@ -1,0 +1,8 @@
+[2026-08-22 08:03:08] [DispatcherUnhandledException]
+System.NullReferenceException: Object reference not set to an instance of an object.
+   at SearchFile.MainWindow.TriggerSearchAsync() in D:\Tool\SearchFile\MainWindow.xaml.cs:line 87
+   at SearchFile.MainWindow.Filter_Checked(Object sender, RoutedEventArgs e) in D:\Tool\SearchFile\MainWindow.xaml.cs:line 60
+   at System.Threading.Tasks.Task.<>c.<ThrowAsync>b__124_0(Object state)
+   at System.Windows.Threading.ExceptionWrapper.InternalRealCall(Delegate callback, Object args, Int32 numArgs)
+   at System.Windows.Threading.ExceptionWrapper.TryCatchWhen(Object source, Delegate callback, Object args, Int32 numArgs, Delegate catchHandler)
+----------------------------------------

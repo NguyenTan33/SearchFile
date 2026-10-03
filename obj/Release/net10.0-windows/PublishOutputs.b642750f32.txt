@@ -1,0 +1,5 @@
+D:\Tool\SearchFile\App\SearchFile.exe
+D:\Tool\SearchFile\App\SearchFile.dll
+D:\Tool\SearchFile\App\SearchFile.deps.json
+D:\Tool\SearchFile\App\SearchFile.runtimeconfig.json
+D:\Tool\SearchFile\App\SearchFile.pdb

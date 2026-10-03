@@ -1,0 +1,111 @@
+<Window x:Class="SearchFile.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="QuickSearchFile - Tim Kiem File Sieu Toc" 
+        Height="750" Width="1200"
+        WindowStartupLocation="CenterScreen"
+        Background="{StaticResource BgDark}"
+        Foreground="{StaticResource TextMain}"
+        KeyDown="Window_KeyDown">
+    <Grid Margin="12">
+        <Grid.RowDefinitions>
+            <!-- Top Controls -->
+            <RowDefinition Height="Auto"/>
+            <!-- Main DataGrid Results -->
+            <RowDefinition Height="*"/>
+            <!-- Footer Status -->
+            <RowDefinition Height="Auto"/>
+        </Grid.RowDefinitions>
+
+        <!-- TOP CONTROLS BAR -->
+        <Border Grid.Row="0" Background="{StaticResource BgCard}" CornerRadius="8" Padding="12" Margin="0,0,0,10" BorderBrush="{StaticResource BorderDark}" BorderThickness="1">
+            <Grid>
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="Auto"/>
+                    <RowDefinition Height="Auto"/>
+                </Grid.RowDefinitions>
+
+                <!-- Search Input Row -->
+                <Grid Grid.Row="0" Margin="0,0,0,10">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="*"/>
+                        <ColumnDefinition Width="Auto"/>
+                        <ColumnDefinition Width="200"/>
+                    </Grid.ColumnDefinitions>
+
+                    <!-- Search Input -->
+                    <Grid Grid.Column="0" Margin="0,0,12,0">
+                        <TextBox x:Name="TxtSearch" TextChanged="TxtSearch_TextChanged" 
+                                 Padding="28,8,28,8" FontSize="14" ToolTip="Gõ tên file hoặc đuôi mở rộng để tìm kiếm (Ctrl+F)"/>
+                        <TextBlock Text="🔍" VerticalAlignment="Center" HorizontalAlignment="Left" Margin="8,0,0,0" Foreground="{StaticResource TextMuted}" IsHitTestVisible="False"/>
+                        <Button x:Name="BtnClearSearch" Content="✖" HorizontalAlignment="Right" VerticalAlignment="Center" 
+                                Margin="0,0,6,0" Width="20" Height="20" Padding="0" Background="Transparent" 
+                                Foreground="{StaticResource TextMuted}" Click="BtnClearSearch_Click" Style="{StaticResource SecondaryButton}" BorderThickness="0"/>
+                    </Grid>
+
+                    <TextBlock Grid.Column="1" Text="Ổ Đĩa:" VerticalAlignment="Center" Foreground="{StaticResource TextMain}" FontWeight="SemiBold" Margin="0,0,8,0"/>
+
+                    <!-- Drive Selector -->
+                    <ComboBox x:Name="CmbDrives" Grid.Column="2" SelectionChanged="CmbDrives_SelectionChanged"/>
+                </Grid>
+
+                <!-- Category Filters Row -->
+                <StackPanel Grid.Row="1" Orientation="Horizontal">
+                    <TextBlock Text="Loại File:" VerticalAlignment="Center" Foreground="{StaticResource TextMuted}" Margin="0,0,10,0" FontWeight="SemiBold"/>
+                    <RadioButton x:Name="RbAll" Content="Tất cả" IsChecked="True" Checked="Filter_Checked" Margin="0,0,12,0" Foreground="{StaticResource TextMain}"/>
+                    <RadioButton x:Name="RbDocs" Content="📄 Văn bản (.pdf, .docx, .xlsx)" Checked="Filter_Checked" Margin="0,0,12,0" Foreground="{StaticResource TextMain}"/>
+                    <RadioButton x:Name="RbImages" Content="🖼️ Hình ảnh (.png, .jpg)" Checked="Filter_Checked" Margin="0,0,12,0" Foreground="{StaticResource TextMain}"/>
+                    <RadioButton x:Name="RbExec" Content="⚡ App/Script (.exe, .bat)" Checked="Filter_Checked" Margin="0,0,12,0" Foreground="{StaticResource TextMain}"/>
+                    <RadioButton x:Name="RbCode" Content="💻 Code/SQL (.cs, .sql, .json)" Checked="Filter_Checked" Margin="0,0,12,0" Foreground="{StaticResource TextMain}"/>
+                    <RadioButton x:Name="RbFolders" Content="📁 Thư mục" Checked="Filter_Checked" Foreground="{StaticResource TextMain}"/>
+                </StackPanel>
+            </Grid>
+        </Border>
+
+        <!-- RESULTS DATAGRID -->
+        <Border Grid.Row="1" Background="{StaticResource BgCard}" CornerRadius="8" Padding="1" BorderBrush="{StaticResource BorderDark}" BorderThickness="1">
+            <Grid>
+                <DataGrid x:Name="GridResults" AutoGenerateColumns="False" IsReadOnly="True"
+                          MouseDoubleClick="GridResults_MouseDoubleClick"
+                          LoadingRow="GridResults_LoadingRow">
+                    <DataGrid.Columns>
+                        <DataGridTextColumn Header=" " Binding="{Binding IconKind}" Width="40"/>
+                        <DataGridTextColumn Header="Tên File / Thư Mục" Binding="{Binding FileName}" Width="280" FontWeight="SemiBold"/>
+                        <DataGridTextColumn Header="Đường Dẫn Chứa (Folder Path)" Binding="{Binding DirectoryPath}" Width="*"/>
+                        <DataGridTextColumn Header="Dung Lượng" Binding="{Binding FormattedSize}" Width="110"/>
+                        <DataGridTextColumn Header="Ngày Sửa Đổi" Binding="{Binding FormattedDate}" Width="160"/>
+                    </DataGrid.Columns>
+                    <DataGrid.ContextMenu>
+                        <ContextMenu Background="{StaticResource BgHeader}" Foreground="{StaticResource TextMain}">
+                            <MenuItem Header="📂 Mở Thư Mục Chứa File" Click="MenuOpenFolder_Click"/>
+                            <MenuItem Header="📄 Mở File" Click="MenuOpenFile_Click"/>
+                            <Separator Background="{StaticResource BorderDark}"/>
+                            <MenuItem Header="📋 Copy Đường Dẫn File" Click="MenuCopyPath_Click"/>
+                            <MenuItem Header="📋 Copy Tên File" Click="MenuCopyName_Click"/>
+                        </ContextMenu>
+                    </DataGrid.ContextMenu>
+                </DataGrid>
+
+                <!-- Loading Spinner Overlay -->
+                <Border x:Name="OverlaySearching" Background="#AA111827" Visibility="Collapsed" IsHitTestVisible="False">
+                    <StackPanel VerticalAlignment="Center" HorizontalAlignment="Center">
+                        <TextBlock Text="🔍 Đang quét tìm kiếm..." FontSize="15" FontWeight="Bold" Foreground="White" HorizontalAlignment="Center"/>
+                    </StackPanel>
+                </Border>
+            </Grid>
+        </Border>
+
+        <!-- FOOTER STATUS BAR -->
+        <Border Grid.Row="2" Background="{StaticResource BgCard}" CornerRadius="6" Padding="10,6" Margin="0,8,0,0" BorderBrush="{StaticResource BorderDark}" BorderThickness="1">
+            <Grid>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="*"/>
+                    <ColumnDefinition Width="Auto"/>
+                </Grid.ColumnDefinitions>
+
+                <TextBlock x:Name="TxtStatus" Text="Sẵn sàng. Gõ tên file vào ô trên để tìm kiếm." Foreground="{StaticResource TextMuted}" VerticalAlignment="Center"/>
+                <TextBlock Grid.Column="1" Text="💡 Mẹo: Double-click để mở | Chuột phải mở thư mục | Ctrl+F tìm kiếm" Foreground="#60A5FA" VerticalAlignment="Center" FontSize="11.5"/>
+            </Grid>
+        </Border>
+    </Grid>
+</Window>
